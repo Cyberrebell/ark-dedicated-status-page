@@ -1,0 +1,16 @@
+{
+    "name": "cyberrebell/ark-dedicated-status-page",
+    "description": "php + zf2 based status page generator for ARK: Survival Evolved dedicated server",
+    "license": "GPL v3",
+    "keywords": [
+        "ARK: Survival Evolved",
+        "status",
+        "page",
+        "php",
+        "zf2"
+    ],
+    "require": {
+        "php": ">=5.5",
+        "zendframework/zendframework": ">=2.5"
+    }
+}
