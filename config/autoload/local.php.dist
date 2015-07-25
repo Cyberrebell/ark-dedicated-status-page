@@ -1,4 +1,10 @@
 <?php
 return [
-
+	'ark-survival-evolved' => [
+		'status-page' => [
+			'server-ip' => '127.0.0.1',
+			'server-port' => 27015,
+			'target-directory' => '/var/www/'
+		]
+	]
 ];

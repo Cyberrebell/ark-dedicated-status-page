@@ -25,7 +25,7 @@ return [
     ],
     'controllers' => [
         'invokables' => [
-            'Application\Controller\Index' => 'Application\Controller\IndexController'
+            'Application\Controller\Cron' => 'Application\Controller\CronController'
         ],
     ],
     'view_manager' => [
@@ -47,6 +47,15 @@ return [
     'console' => [
         'router' => [
             'routes' => [
+            	'cron' => [
+            		'options' => [
+            			'route'    => 'status-page generate',
+            			'defaults' => [
+            				'controller' => 'Application\Controller\Cron',
+            				'action'     => 'generateStatusPage'
+            			]
+            		]
+            	]
             ]
         ]
     ]
