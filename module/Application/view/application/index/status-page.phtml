@@ -2,15 +2,35 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<link href="css/style.css" rel="stylesheet">
+		<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+		<link href="css/bootstrap.min.css" rel="stylesheet">
+		<script src="js/jquery.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
 	</head>
 	<body>
-		<table>
-			<thead></thead>
+		<table id="status-table">
 			<tbody>
 				<tr>
 					<td>Server-Status:</td>
-					<td><?php echo ($serverStatus) ? 'Online' : 'Offline' ?></td>
+					<td class="right-col">
+						<?php if ($serverStatus): ?>
+						<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span> Online
+						<?php else: ?>
+						<span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span> Offline
+						<?php endif; ?>
+					</td>
 				</tr>
+				<?php if ($load !== null): ?>
+				<tr>
+					<td>Server-Auslastung:</td>
+					<td class="progress">
+						<div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $load ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $load ?>%;min-width: 2em;">
+							<?php echo $load . '%' ?>
+						</div>
+					</td>
+				</tr>
+				<?php endif; ?>
 				<tr>
 					<td>Spiel:</td>
 					<td><?php echo $game ?></td>
@@ -25,15 +45,46 @@
 				</tr>
 				<tr>
 					<td>Passwort geschützt:</td>
-					<td><?php echo ($serverStatus) ? 'Ja' : 'Nein' ?></td>
+					<td>
+						<?php if ($passwordProtected): ?>
+						<span class="glyphicon glyphicon-lock" aria-hidden="true"></span> Geschützt
+						<?php else: ?>
+						<span class="glyphicon glyphicon-globe" aria-hidden="true"></span> Offen
+						<?php endif; ?>
+					</td>
 				</tr>
 				<tr>
 					<td>Map-Name:</td>
 					<td><?php echo $map ?></td>
 				</tr>
 				<tr>
+					<td>Spieler online:</td>
+					<td class="progress">
+						<div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $playersOnline ?>" aria-valuemin="0" aria-valuemax="<?php echo $slots ?>" style="width: <?php echo $playersOnline ?>%;min-width: 4em;">
+							<?php echo '(' . $playersOnline . ' / ' . $slots . ')' ?>
+						</div>
+					</td>
+				</tr>
+				<tr>
 					<td>Spieler:</td>
-					<td><?php echo '(' . $playersOnline . ' / ' . $slots . ')' ?></td>
+					<td>
+						<table id="player-table">
+							<thead>
+								<tr>
+									<th style="min-width: 4em;">Name</th>
+									<th>Online seit</th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php foreach ($players as $name => $player): ?>
+								<tr>
+									<td><?php echo $name ?></td>
+									<td><?php echo (int) ($player->getConnectTime() / 60) . ' min' ?></td>
+								</tr>
+								<?php endforeach; ?>
+							</tbody>
+						</table>
+					</td>
 				</tr>
 			</tbody>
 		</table>

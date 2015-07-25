@@ -79,6 +79,16 @@ class ArkDedicatedServer extends \SourceServer
 		return $this->slots;
 	}
 	
+	public function getServerLoad()
+	{
+		if ($this->ipAddress == '127.0.0.1') {
+			$load = sys_getloadavg();
+			$cpuCores = $this->num_cpus();
+			
+			return (int) (($load[1] / $cpuCores) * 100.0);
+		}
+	}
+	
 	protected function loadServerInfo()
 	{
 		try {
@@ -87,6 +97,7 @@ class ArkDedicatedServer extends \SourceServer
 			$this->serverStatus = false;
 			return null;
 		}
+		$this->serverStatus = true;
 		
 		$this->game = $serverInfo['gameDesc'];
 
@@ -99,5 +110,42 @@ class ArkDedicatedServer extends \SourceServer
 		$this->map = $serverInfo['mapName'];
 		$this->playersOnline = $serverInfo['numberOfPlayers'];
 		$this->slots = $serverInfo['maxPlayers'];
+	}
+	
+	protected function num_cpus()
+	{
+		$numCpus = 1;
+		if (is_file('/proc/cpuinfo'))
+		{
+			$cpuinfo = file_get_contents('/proc/cpuinfo');
+			preg_match_all('/^processor/m', $cpuinfo, $matches);
+			$numCpus = count($matches[0]);
+		}
+		else if ('WIN' == strtoupper(substr(PHP_OS, 0, 3)))
+		{
+			$process = @popen('wmic cpu get NumberOfCores', 'rb');
+			if (false !== $process)
+			{
+				fgets($process);
+				$numCpus = intval(fgets($process));
+				pclose($process);
+			}
+		}
+		else
+		{
+			$process = @popen('sysctl -a', 'rb');
+			if (false !== $process)
+			{
+				$output = stream_get_contents($process);
+				preg_match('/hw.ncpu: (\d+)/', $output, $matches);
+				if ($matches)
+				{
+					$numCpus = intval($matches[1][0]);
+				}
+				pclose($process);
+			}
+		}
+	
+		return $numCpus;
 	}
 }
